@@ -2,7 +2,7 @@ import tkinter
 import tkinter.messagebox
 import customtkinter
 import os
-from PIL import Image
+from PIL import Image as pilimg
 
 
 
@@ -62,12 +62,15 @@ class App(customtkinter.CTk):
                                                                command=self.change_scaling_event)
         self.scaling_optionemenu.grid(row=10, column=0, padx=20, pady=(10, 20))
 
-        # COLUMN-2 CONFIGURATION (INFO SECTION)
+        # # COLUMN-2 CONFIGURATION (INFO SECTION)
         self.info_label = customtkinter.CTkLabel(self,text="FACE RECOGNITION ATTENDANCE SYSTEM",font=customtkinter.CTkFont(size=25, weight="bold"))
         self.info_label.grid(row=0,column=1,padx=(20,20), pady=(20, 10), sticky="ew")
 
-        self.info_box = customtkinter.CTkTextbox(self,width=250)
-        self.info_box.grid(row=1, column=1, padx=(20, 20), pady=(20, 30), sticky="nsew")
+        # self.info_box = customtkinter.CTkTextbox(self,width=250)
+        # self.info_box.grid(row=1, column=1, padx=(20, 20), pady=(20, 30), sticky="nsew")
+        self.attendance_gui_img = customtkinter.CTkImage(pilimg.open('resources/attendance_gui.jpg'),size=(600,600))
+        self.central_image = customtkinter.CTkLabel(self,text=" ",image=self.attendance_gui_img)
+        self.central_image.grid(row=1,column=1,padx=(20,20),pady=(20,30),sticky="nsew")
 
         self.progressbar_1 = customtkinter.CTkProgressBar(self)
         self.progressbar_1.grid(row=3, column=1, padx=(20, 10), pady=(10, 10), sticky="ew")
@@ -172,8 +175,8 @@ class App(customtkinter.CTk):
         # self.checkbox_3.grid(row=3, column=0, pady=20, padx=20, sticky="n")
 
         # set default values
-        self.progressbar_1.start()
-        self.progressbar_1.configure(mode="indeterminnate")
+        # self.progressbar_1.start()
+        # self.progressbar_1.configure(mode="indeterminnate")
         # self.checkbox_3.configure(state="disabled")
         # self.checkbox_1.select()
         # self.scrollable_frame_switches[0].select()
