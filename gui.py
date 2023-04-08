@@ -116,12 +116,7 @@ class App(customtkinter.CTk):
 
     # Frame changing function
     def select_frame_by_name(self, name):
-        # set button color for selected button
-    #     self.home_button.configure(fg_color=("gray75", "gray25") if name == "home" else "transparent")
-    #     self.frame_2_button.configure(fg_color=("gray75", "gray25") if name == "frame_2" else "transparent")
-        # self.frame_3_button.configure(fg_color=("gray75", "gray25") if name == "frame_3" else "transparent")
-
-    #     # show selected frame
+        """show selected frame in column 3 of main grid"""
         if name == "Register":
             self.register_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
         else:
