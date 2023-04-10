@@ -154,13 +154,13 @@ class App(customtkinter.CTk):
             writer_object.writerow(student_data)
             f_obj.close()
 
-        # capturing student image
-        capture_student.App(tk.Toplevel(), "Capture Student Image",roll_num=self.rollnum_entry.get())
-
         # clear the input fields 
         self.name_entry.delete(0,customtkinter.END)
         self.rollnum_entry.delete(0,customtkinter.END)
         self.department_entry.delete(0,customtkinter.END)
+
+        # capturing student image
+        capture_student.App(tk.Toplevel(), "Capture Student Image",roll_num=student_data[1])
 
 
     # delete section functions
