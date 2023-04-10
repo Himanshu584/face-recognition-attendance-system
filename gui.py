@@ -1,8 +1,11 @@
-import tkinter
-import tkinter.messagebox
+import tkinter as tk
 import customtkinter
 import os
 from PIL import Image as pilimg
+from PIL import ImageTk as imtk
+from csv import writer
+import cv2
+import capture_student
 
 
 
@@ -91,10 +94,10 @@ class App(customtkinter.CTk):
         self.rollnum_entry = customtkinter.CTkEntry(self.register_frame, placeholder_text="Roll Number")
         self.rollnum_entry.grid(row=2, column=1, columnspan=2, padx=(20, 20), pady=(10, 20), sticky="ew")
 
-        self.entry = customtkinter.CTkEntry(self.register_frame, placeholder_text="Course")
-        self.entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(10, 20), sticky="ew")
+        self.department_entry = customtkinter.CTkEntry(self.register_frame, placeholder_text="Department")
+        self.department_entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(10, 20), sticky="ew")
 
-        self.register_capture = customtkinter.CTkButton(master=self.register_frame,text="Capture Student", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.register_capture = customtkinter.CTkButton(master=self.register_frame,text="Capture Student", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), command=self.register_student)
         self.register_capture.grid(row=4, column=1, padx=(20, 20), pady=(10, 10), sticky="nsew")
 
 
@@ -107,7 +110,7 @@ class App(customtkinter.CTk):
         self.student_roll = customtkinter.CTkEntry(self.delete_student_frame,placeholder_text="Roll Number")
         self.student_roll.grid(row=1, column=1, columnspan=2, padx=(20, 20), pady=(10, 20), sticky="nsew")
 
-        self.delete_student_bttn = customtkinter.CTkButton(master=self.delete_student_frame,text="delete Student", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.delete_student_bttn = customtkinter.CTkButton(master=self.delete_student_frame,text="Delete Student", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"),command=lambda :self.delete_student(self.student_roll.get()))
         self.delete_student_bttn.grid(row=4, column=1, padx=(20, 20), pady=(10, 10), sticky="nsew")
         ### -------------- ###
 
@@ -125,10 +128,6 @@ class App(customtkinter.CTk):
             self.delete_student_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
         else:
             self.delete_student_frame.grid_forget()
-    #     if name == "frame_3":
-    #         self.third_frame.grid(row=0, column=1, sticky="nsew")
-    #     else:
-    #         self.third_frame.grid_forget()
 
     # Work Functions
 
@@ -139,13 +138,39 @@ class App(customtkinter.CTk):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
+    # register section functions
     def register_button_event(self):
-        """ Registers new student """
+        """ activates the register frame for registering new student """
         self.select_frame_by_name("Register")
-    
+
+    def register_student(self):
+        """takes students information and stores it in a file, then turns on front camera to capture students photo"""
+        
+        # storing student information into a list
+        student_data = [self.name_entry.get(),self.rollnum_entry.get(),self.department_entry.get()]
+        # writing the student information into student_database
+        with open("student_db/students.csv",'a') as f_obj:
+            writer_object = writer(f_obj)
+            writer_object.writerow(student_data)
+            f_obj.close()
+
+        # capturing student image
+        capture_student.App(tk.Toplevel(), "Capture Student Image",roll_num=self.rollnum_entry.get())
+
+        # clear the input fields 
+        self.name_entry.delete(0,customtkinter.END)
+        self.rollnum_entry.delete(0,customtkinter.END)
+        self.department_entry.delete(0,customtkinter.END)
+
+
+    # delete section functions
     def delete_button_event(self):
-        """deletes the student data we want to delete"""
+        """ Activates the delete student frame to delete a student """
         self.select_frame_by_name("delete_student")
+
+    def delete_student(self,roll_number):
+        """ takes roll_number and deletes student's photo and information from database """
+        print("deleting student :",roll_number)
 
 
     def train_button_event(self):
@@ -165,112 +190,3 @@ class App(customtkinter.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# import tkinter
-# import customtkinter as ctk
-# import os
-
-# ctk.set_appearance_mode("dark")
-# # ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
-# ctk.set_default_color_theme("green")  # Themes: blue (default), dark-blue, green
-
-# app = ctk.CTk()  # create CTk window like you do with the Tk window
-# app.title("face-recognition-attendance-system")
-# app.geometry("400x500")
-# app.resizable(0,0)
-
-# # functions 
-# def appear_light():
-#     """sets the gui theme to light mode"""
-#     ctk.set_appearance_mode("light")
-#     title_label.configure(font=("Roboto",20,"bold"),text_color="#37694e")
-#     print("light theme activated")
-
-# def appear_dark():
-#     """sets the gui theme to dark mode"""
-#     ctk.set_appearance_mode("dark")
-#     title_label.configure(font=("Roboto",20,"bold"),text_color="#42f595")
-#     print("dark theme activated")
-
-# def register_student():
-#     """registers new student in database/folder. Collects student information and captures there faces with format = 'rollnumber.jpg/png'"""
-#     print("Registering new faces...")
-
-# def train_model():
-#     """runs the encoder.py file .i.e generates the face encodings for students in database"""
-#     print("Training the system...")
-#     os.system("python encoder.py")
-
-# def detect_face():
-#     """runs main.py file, it detects and marks students attendance"""
-#     print("Detecting faces...")
-#     os.system("python main.py")
-
-# def delete_face():
-#     """deletes the student we want to delete"""
-#     print("Deleting faces...")
-
-# def report():
-#     """Generates attendace sheet for the day"""
-#     print("Generating csv file...")
-
-# # ,fg_color="#f542e6"
-# # title
-# title_label = ctk.CTkLabel(master=app,text="Face Recognition Attendance System",text_color="#42f595")
-# title_label.place(relx=0.5,rely=0.1,anchor=tkinter.CENTER)
-# title_label.configure(font=("Roboto",20,"bold"))
-
-# # buttons
-# register_button = ctk.CTkButton(master=app, text="Register",command=register_student)
-# register_button.place(relx=0.5,rely=0.2,anchor=tkinter.N)
-# register_button.configure(font=("Roboto",15,"bold"))
-
-
-
-# train_button = ctk.CTkButton(master=app, text="Train",command=train_model)
-# train_button.place(relx=0.5,rely=0.3,anchor=tkinter.N)
-# train_button.configure(font=("Roboto",15,"bold"))
-
-# detect_button = ctk.CTkButton(master=app, text="Mark",command=detect_face)
-# detect_button.place(relx=0.5,rely=0.4,anchor=tkinter.N)
-# detect_button.configure(font=("Roboto",15,"bold"))
-
-# delete_button = ctk.CTkButton(master=app, text="Delete",command=delete_face)
-# delete_button.place(relx=0.5,rely=0.5,anchor=tkinter.N)
-# delete_button.configure(font=("Roboto",15,"bold"))
-
-# report_button = ctk.CTkButton(master=app, text="Report",command=report)
-# report_button.place(relx=0.5,rely=0.6,anchor=tkinter.N)
-# report_button.configure(font=("Roboto",15,"bold"))
-
-
-# # Theme Buttons
-# light_button = ctk.CTkButton(master=app, text="light Theme", command=appear_light)
-# light_button.place(relx=0.45, rely=0.9, anchor=tkinter.E)
-# light_button.configure(font=("Roboto",15,"bold"))
-
-# dark_button = ctk.CTkButton(master=app, text="Dark Theme", command=appear_dark)
-# dark_button.place(relx=0.55,rely=0.9,anchor=tkinter.W)
-# dark_button.configure(font=("Roboto",15,"bold"))
-
-# app.mainloop()

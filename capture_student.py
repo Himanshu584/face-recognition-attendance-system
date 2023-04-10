@@ -1,105 +1,85 @@
 import cv2
-import os
 import tkinter as tk
+import customtkinter
 from PIL import Image, ImageTk
 
-# Function to capture photo from front camera and save it
-def capture_photo(name, roll, department, name_entry, roll_entry, department_entry, camera_window):
-    # Open the front camera
-    cap = cv2.VideoCapture(0)
 
-    # Capture a frame from the camera
-    ret, frame = cap.read()
+class VideoCapture:
+    def __init__(self, video_source=0):
+        self.video_source = video_source
+        self.vid = cv2.VideoCapture(self.video_source)
+        if not self.vid.isOpened():
+            raise ValueError("Unable to open video source", video_source)
 
-    # Create a directory to store the photos if it doesn't exist
-    if not os.path.exists('photos'):
-        os.mkdir('photos')
+        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    # Save the photo with the student's name in the photos directory
-    photo_path = f"photos/{name}_{roll}_{department}.jpg"
-    cv2.imwrite(photo_path, frame)
+    def get_frame(self):
+        if self.vid.isOpened():
+            ret, frame = self.vid.read()
+            if ret:
+                return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            else:
+                return (ret, None)
+        else:
+            return (False, None)
 
-    # Release the camera
-    cap.release()
+    def release(self):
+        if self.vid.isOpened():
+            self.vid.release()
 
-    # Clear the input fields in the GUI window
-    name_entry.delete(0, tk.END)
-    roll_entry.delete(0, tk.END)
-    department_entry.delete(0, tk.END)
 
-    # Close the camera window
-    camera_window.destroy()
+class App:
+    def __init__(self, window, window_title,roll_num, video_source=0):
+        self.window = window
+        self.window.title(window_title)
+        self.video_source = video_source
+        self.roll_num = roll_num
 
-# Function to start the camera and display the live video feed in a new window
-def start_camera(name_entry, roll_entry, department_entry):
-    # Create a new window
-    camera_window = tk.Toplevel()
-    camera_window.title("Capture Photo")
+        # Open video source (by default this will try to open the computer webcam)
+        self.vid = VideoCapture(self.video_source)
 
-    # Create a label to display the live video feed
-    label = tk.Label(camera_window)
-    label.pack()
+        # Create a canvas that can fit the above video source size
+        self.canvas = tk.Canvas(window, width=self.vid.width, height=self.vid.height)
+        self.canvas.pack()
 
-    # Create a button to capture the photo
-    button = tk.Button(camera_window, text="Capture", command=lambda: capture_photo(name_entry.get(), roll_entry.get(), department_entry.get(), name_entry, roll_entry, department_entry, camera_window))
-    button.pack()
+        # Add a capture button
+        self.capture_button = customtkinter.CTkButton(window, text="Capture", command=self.capture)
+        self.capture_button.pack()
 
-    # Start the camera and update the label with each captured frame
-    cap = cv2.VideoCapture(0)
-    while True:
-        # Capture a frame from the camera
-        ret, frame = cap.read()
+        # After it is called once, the update method will be automatically called every delay milliseconds
+        self.delay = 15
+        self.update()
 
-        # Convert the frame to a PIL Image
-        img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(img)
+        # Bind the window close event to the release method of the VideoCapture object
+        self.window.protocol("WM_DELETE_WINDOW", self.release)
 
-        # Convert the PIL Image to a Tkinter PhotoImage
-        photo = ImageTk.PhotoImage(img)
+        self.window.mainloop()
 
-        # Update the label in the Tkinter interface with the PhotoImage
-        label.config(image=photo)
-        label.image = photo
+    def update(self):
+        # Get a frame from the video source
+        ret, frame = self.vid.get_frame()
 
-        # Update the Tkinter interface and wait for 1 millisecond
-        camera_window.update()
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        if ret:
+            self.photo = ImageTk.PhotoImage(image=Image.fromarray(frame))
+            self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
 
-    # Release the camera
-    cap.release()
-    cv2.destroyAllWindows()
+        self.window.after(self.delay, self.update)
 
-# Create a Tkinter window for getting student information
-root = tk.Tk()
-root.title("Student Information")
+    def capture(self):
+        # Get a frame from the video source
+        ret, frame = self.vid.get_frame()
 
-# Create a label for the student's name
-name_label = tk.Label(root, text="Name:")
-name_label.pack()
+        if ret:
+            # Save the frame as an image with the given roll number as the file name
+            file_name = f"images/{self.roll_num}.jpg"
+            cv2.imwrite(file_name, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
-# Create an entry widget for the student's name
-name_entry = tk.Entry(root)
-name_entry.pack()
+            # Close the program after capturing and saving the image
+            self.release()
 
-# Create a label for the student's roll number
-roll_label = tk.Label(root, text="Roll Number:")
-roll_label.pack()
+    def release(self):
+        # Release the VideoCapture object and close the window
+        self.vid.release()
+        self.window.destroy()
 
-# Create an entry widget for the student's roll number
-roll_entry = tk.Entry(root)
-roll_entry.pack()
-
-# Create a label for the student's department
-department_label = tk.Label(root, text="Department:")
-department_label.pack()
-
-# Create an entry widget for the student's department
-department_entry = tk.Entry(root)
-department_entry.pack()
-
-# Create a button to start camera
-capture_button = tk.Button(root, text="Capture Photo", command=lambda: start_camera(name_entry, roll_entry, department_entry))
-capture_button.pack()
-
-root.mainloop()
