@@ -6,6 +6,8 @@ from PIL import ImageTk as imtk
 from csv import writer
 import cv2
 import capture_student
+import pandas as pd
+import time
 
 
 
@@ -108,10 +110,13 @@ class App(customtkinter.CTk):
         self.delete_logo_label.grid(row=0,column=1,padx=(29,29), pady=(20, 20), sticky="nsew")
 
         self.student_roll = customtkinter.CTkEntry(self.delete_student_frame,placeholder_text="Roll Number")
-        self.student_roll.grid(row=1, column=1, columnspan=2, padx=(20, 20), pady=(10, 20), sticky="nsew")
+        self.student_roll.grid(row=1, column=1, columnspan=2, padx=(20, 20), pady=(10, 20), sticky="nsew")  
 
-        self.delete_student_bttn = customtkinter.CTkButton(master=self.delete_student_frame,text="Delete Student", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"),command=lambda :self.delete_student(self.student_roll.get()))
+        self.delete_student_bttn = customtkinter.CTkButton(master=self.delete_student_frame,text="Delete Student", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"),command=lambda :self.delete_student(int(self.student_roll.get())))
         self.delete_student_bttn.grid(row=4, column=1, padx=(20, 20), pady=(10, 10), sticky="nsew")
+        
+        self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="")
+        self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
         ### -------------- ###
 
 
@@ -167,10 +172,39 @@ class App(customtkinter.CTk):
     def delete_button_event(self):
         """ Activates the delete student frame to delete a student """
         self.select_frame_by_name("delete_student")
+        self.deleted_student_display.grid_forget()
 
     def delete_student(self,roll_number):
         """ takes roll_number and deletes student's photo and information from database """
-        print("deleting student :",roll_number)
+        self.student_roll.delete(0,customtkinter.END)
+        # read student database into pandas dataframe
+        self.student_data = pd.read_csv("student_db/students.csv")
+
+        if roll_number in self.student_data['roll_num'].values :
+            # student info
+            self.dname = self.student_data[self.student_data["roll_num"]==roll_number]['name'][0]
+            self.droll = self.student_data[self.student_data["roll_num"]==roll_number]['roll_num'][0]
+            self.ddept = self.student_data[self.student_data["roll_num"]==roll_number]['department'][0]
+
+            ## deleting the student from database and images
+
+            # filtering data to exclude rows with roll Number given
+            self.student_data = self.student_data[self.student_data["roll_num"] !=roll_number]
+            # delete required students photo from images folder
+            os.remove("images/{}.jpg".format(roll_number))
+
+            # write filtered data back to csv file
+            self.student_data.to_csv("student_db/students.csv",index=False,columns=['name','roll_num','department'])
+
+            self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
+            self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
+            # self.deleted_student_display.configure(text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
+        else:
+            self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="No student with roll number {}".format(roll_number))
+            self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
+
+        
+
 
 
     def train_button_event(self):
