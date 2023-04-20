@@ -210,7 +210,7 @@ class App(customtkinter.CTk):
     def train_button_event(self):
         """runs the encoder.py file .i.e generates the face encodings for students in database"""
         print("Training the system...")
-        # os.system("python encoder.py")
+        os.system("python encoder.py")
     
     def detect_button_event(self):
         print("Marking Attendance")
