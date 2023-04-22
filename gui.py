@@ -9,8 +9,6 @@ import capture_student
 import pandas as pd
 import time
 
-
-
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
@@ -51,8 +49,8 @@ class App(customtkinter.CTk):
         self.detect_button = customtkinter.CTkButton(self.sidebar_frame,text="Mark Attendance", command=self.detect_button_event)
         self.detect_button.grid(row=4, column=0, padx=20, pady=10)
 
-        self.report_button = customtkinter.CTkButton(self.sidebar_frame,text="generate Attendance",command=self.report_button_event)
-        self.report_button.grid(row=5, column=0, padx=20, pady=10)
+        # self.report_button = customtkinter.CTkButton(self.sidebar_frame,text="generate Attendance",command=self.report_button_event)
+        # self.report_button.grid(row=5, column=0, padx=20, pady=10)
         
         # appearance buttons
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
@@ -153,6 +151,7 @@ class App(customtkinter.CTk):
         
         # storing student information into a list
         student_data = [self.name_entry.get(),self.rollnum_entry.get(),self.department_entry.get()]
+
         # writing the student information into student_database
         with open("student_db/students.csv",'a') as f_obj:
             writer_object = writer(f_obj)
@@ -216,9 +215,9 @@ class App(customtkinter.CTk):
         print("Marking Attendance")
         os.system("python main.py")
     
-    def report_button_event(self):
-        """Generates attendace sheet for the day"""
-        print("Generating csv file...")
+    # def report_button_event(self):
+    #     """Generates attendace sheet for the day"""
+    #     print("Generating csv file...")
 
 
 if __name__ == "__main__":
