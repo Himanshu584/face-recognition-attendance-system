@@ -29,8 +29,8 @@ face_encodings = encodeimages(studentimglist)
 encodingswithids = [face_encodings,studentimgids]
 
 
-# # dump all the encodings with ids into pickle/pascal file
-# with open("encodings.p",'wb') as f:
-#     pickle.dump(encodingswithids,f)
+# dump all the encodings with ids into pickle/pascal file
+with open("encodings.p",'wb') as f:
+    pickle.dump(encodingswithids,f)
 
     
