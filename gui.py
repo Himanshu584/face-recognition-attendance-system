@@ -195,7 +195,8 @@ class App(customtkinter.CTk):
             # write filtered data back to csv file
             self.student_data.to_csv("student_db/students.csv",index=False,columns=['name','roll_num','department'])
 
-            self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
+            # self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
+            self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="Deleted Student :\n\n {} \n {}\n {}".format(self.dname,self.droll,self.ddept))
             self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
             # self.deleted_student_display.configure(text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
         else:
