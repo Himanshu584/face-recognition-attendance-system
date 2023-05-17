@@ -13,7 +13,6 @@ for img_pth in os.listdir(imgdir):
     studentimglist.append(cv2.imread(os.path.join(imgdir,img_pth)))
     studentimgids.append(img_pth.split('.')[0]) # get relative ids of students into studentimgids
 
-print(len(studentimglist))
 # encoding generator function
 def encodeimages(studentimages):
     faceencodinglist = []

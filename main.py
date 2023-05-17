@@ -55,10 +55,7 @@ while True:
             matchindex = np.argmin(facedis)
 
             if matches[matchindex]:
-                print(matchindex)
                 id = encodingids[matchindex]
-                print(id)
-                # present_students_lst.append(matchindex)
                 if counter == 0:
                     counter = 1
                     modetype = 1

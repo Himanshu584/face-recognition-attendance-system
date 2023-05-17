@@ -48,9 +48,6 @@ class App(customtkinter.CTk):
 
         self.detect_button = customtkinter.CTkButton(self.sidebar_frame,text="Mark Attendance", command=self.detect_button_event)
         self.detect_button.grid(row=4, column=0, padx=20, pady=10)
-
-        # self.report_button = customtkinter.CTkButton(self.sidebar_frame,text="generate Attendance",command=self.report_button_event)
-        # self.report_button.grid(row=5, column=0, padx=20, pady=10)
         
         # appearance buttons
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
@@ -116,7 +113,6 @@ class App(customtkinter.CTk):
         self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="")
         self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
         ### -------------- ###
-
 
 
 
@@ -195,11 +191,11 @@ class App(customtkinter.CTk):
             # write filtered data back to csv file
             self.student_data.to_csv("student_db/students.csv",index=False,columns=['name','roll_num','department'])
 
-            # self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
+            # display the deleted student details
             self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="Deleted Student :\n\n {} \n {}\n {}".format(self.dname,self.droll,self.ddept))
             self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
-            # self.deleted_student_display.configure(text="Deleted Student :\n\nName:\t {} \n Roll Number:\t {}\n Department:\t {}".format(self.dname,self.droll,self.ddept))
         else:
+            # display that no student with the given roll number was found
             self.deleted_student_display = customtkinter.CTkLabel(master=self.delete_student_frame,text="No student with roll number {}".format(roll_number))
             self.deleted_student_display.grid(row=5, column=1, padx=(10, 10), pady=(10, 10), sticky="ew")
 
@@ -216,10 +212,6 @@ class App(customtkinter.CTk):
         print("Marking Attendance")
         os.system("python main.py")
     
-    # def report_button_event(self):
-    #     """Generates attendace sheet for the day"""
-    #     print("Generating csv file...")
-
 
 if __name__ == "__main__":
     app = App()
