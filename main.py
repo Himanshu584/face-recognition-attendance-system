@@ -70,16 +70,16 @@ while True:
                         background[0:0+500,550:550+444] = modelist[modetype]
                         
 
-                if 10<counter<20:
+                if 11<counter<21:
                     modetype = 2
                     background[0:0+500,550:550+444] = modelist[modetype]
 
-                if 3<counter<=10:
+                if 3<counter<=11:
                     cv2.putText(background,str(id),(650,376),cv2.FONT_HERSHEY_COMPLEX,1,(0,0,0),1)
 
                 counter += 1
 
-                if counter >=20:
+                if counter >=21:
                     counter = 0
                     modetype = 0
                     id = -1
