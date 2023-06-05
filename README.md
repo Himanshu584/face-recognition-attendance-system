@@ -91,4 +91,4 @@ After the marking of attendance has been completed, User can simply get the mark
 
 (*Use of Virtual environment is suggested)
 
-# THANKYU !
+# THANKYOU !
