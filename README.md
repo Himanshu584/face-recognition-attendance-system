@@ -45,8 +45,9 @@ The data of the registered student is stored inside a csv file. Also the image o
 On clicking the delete student button, the deletion frame gets activated where user can delete a student by entering student's roll number as input.
 If the roll number entered is not present in the database, it will show no student found otherwise it will delete the student's information from student database and also image of the student.
 
-<img alt="delete unknown student" src="https://github.com/Himanshu584/face-recognition-attendance-system/assets/70319246/2cc030ac-0f1b-43b2-8e37-c6ba00831182" width="450px" height="350px" align="left">
-<img alt="delete unknown student" src="https://github.com/Himanshu584/face-recognition-attendance-system/assets/70319246/1463835d-24fa-4078-8c17-80e09943c871" width="450px" height="350px" align="right">
+<img alt="delete unknown student" src="https://github.com/Himanshu584/face-recognition-attendance-system/assets/70319246/2cc030ac-0f1b-43b2-8e37-c6ba00831182" width="450px" height="350px" >
+
+<img alt="delete unknown student" src="https://github.com/Himanshu584/face-recognition-attendance-system/assets/70319246/1463835d-24fa-4078-8c17-80e09943c871" width="450px" height="350px" >
 
 
 
@@ -57,6 +58,7 @@ This is the final and the most important part of the entire project and Graphica
 **1st Frame : INITIALIZATION FRAME**
 
 ![initialization frame](https://github.com/Himanshu584/face-recognition-attendance-system/blob/main/Project_imgs/initialization-frame.png)
+
 During this frame, the algorithm is searching for a face in the video frame. when it finds the face , it moves on to next step.
 
 **2nd Frame : MARKING FRAME**
@@ -77,4 +79,16 @@ After the face distances have been calculated, the face which had the minimum di
 
 If someone whose attendance has already been marked comes in front of camera again , the system instead of marking the attendance again will simply tell the user that his/her attendance has already been marked.
 
+After the marking of attendance has been completed, User can simply get the marked attendance in form of csv file in the attendance folder of project.
 
+![attendance sheet](https://github.com/Himanshu584/face-recognition-attendance-system/blob/main/Project_imgs/6.png)
+
+
+## To Run this project in your device ,follow the following steps 
+1. clone the repository - ` git clone https://github.com/Himanshu584/face-recognition-attendance-system/ `
+2. install the required dependancies - ` pip install requirements.txt `
+3. Run the project - first cd into the project folder and run command : `python gui.py`
+
+(*Use of Virtual environment is suggested)
+
+# THANKYU !
